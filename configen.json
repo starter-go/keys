@@ -1,0 +1,45 @@
+{
+    "configen": {
+        "version": "4",
+        "sources": [
+            {
+                "id": "lib",
+                "path": "src/lib/golang",
+                "r": true
+            },
+            {
+                "id": "main",
+                "path": "src/main/golang",
+                "r": true
+            },
+            {
+                "id": "test",
+                "path": "src/test/golang",
+                "r": true
+            }
+        ],
+        "destinations": [
+            {
+                "id": "lib",
+                "path": "gen/lib4keys",
+                "sources": [
+                    "lib"
+                ]
+            },
+            {
+                "id": "main",
+                "path": "gen/main4keys",
+                "sources": [
+                    "main"
+                ]
+            },
+            {
+                "id": "test",
+                "path": "gen/test4keys",
+                "sources": [
+                    "test"
+                ]
+            }
+        ]
+    }
+}

@@ -1,6 +1,10 @@
 package keys
 
-import "embed"
+import (
+	"embed"
+
+	"github.com/starter-go/application"
+)
 
 const (
 	theModuleName    = "github.com/starter-go/keys"
@@ -28,13 +32,31 @@ var theTestModuleResFS embed.FS
 ////////////////////////////////////////////////////////////////////////////////
 
 // NewLibModule ...
-func NewLibModule() {
+func NewLibModule() *application.ModuleBuilder {
+	mb := new(application.ModuleBuilder)
+	mb.Name(theModuleName + "#main")
+	mb.Version(theModuleVersion)
+	mb.Revision(theModuleEdition)
+	mb.EmbedResources(theLibModuleResFS, theLibModuleResPath)
+	return mb
 }
 
 // NewMainModule ...
-func NewMainModule() {
+func NewMainModule() *application.ModuleBuilder {
+	mb := new(application.ModuleBuilder)
+	mb.Name(theModuleName + "#lib")
+	mb.Version(theModuleVersion)
+	mb.Revision(theModuleEdition)
+	mb.EmbedResources(theMainModuleResFS, theMainModuleResPath)
+	return mb
 }
 
 // NewTestModule ...
-func NewTestModule() {
+func NewTestModule() *application.ModuleBuilder {
+	mb := new(application.ModuleBuilder)
+	mb.Name(theModuleName + "#test")
+	mb.Version(theModuleVersion)
+	mb.Revision(theModuleEdition)
+	mb.EmbedResources(theTestModuleResFS, theTestModuleResPath)
+	return mb
 }

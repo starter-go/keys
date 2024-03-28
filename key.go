@@ -1,5 +1,7 @@
 package keys
 
+import "crypto"
+
 // Class 表示密钥类型
 type Class string
 
@@ -18,6 +20,8 @@ type Key interface {
 	Class() Class
 
 	Export(want *KeyData) (*KeyData, error)
+
+	Fingerprint(h crypto.Hash) []byte
 }
 
 // KeyData 包含密钥的序列化数据
