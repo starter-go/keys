@@ -13,7 +13,7 @@ func ModuleForMain() application.Module {
 	mb := keys.NewMainModule()
 	mb.Components(main4keys.ExportComponents)
 
-	// mb.Depend(security.Module())
+	mb.Depend(ModuleForLib())
 
 	return mb.Create()
 }
@@ -22,6 +22,9 @@ func ModuleForMain() application.Module {
 func ModuleForTest() application.Module {
 	mb := keys.NewTestModule()
 	mb.Components(test4keys.ExportComponents)
+
+	mb.Depend(ModuleForLib())
+
 	return mb.Create()
 }
 

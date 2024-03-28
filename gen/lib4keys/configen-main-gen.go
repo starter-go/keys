@@ -30,6 +30,7 @@ func (inst *autoRegistrar) register(factory comFactory) error {
 func (inst*autoRegistrar) addAll() error {
 
     
+    inst.register(&pa311542f06_lib_DriverManagerImpl{})
     inst.register(&pa311542f06_lib_Example{})
 
 
