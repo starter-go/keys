@@ -2,6 +2,7 @@ package lib4keys
 import (
     pc38c9ad22 "github.com/starter-go/keys"
     pa311542f0 "github.com/starter-go/keys/src/lib/golang/lib"
+    p3e2e62794 "github.com/starter-go/keys/src/lib/golang/lib/rsad"
      "github.com/starter-go/application"
 )
 
@@ -83,6 +84,44 @@ func (inst* pa311542f06_lib_Example) new() any {
 func (inst* pa311542f06_lib_Example) inject(injext application.InjectionExt, instance any) error {
 	ie := injext
 	com := instance.(*pa311542f0.Example)
+	nop(ie, com)
+
+	
+
+
+    return nil
+}
+
+
+
+// type p3e2e62794.Driver in package:github.com/starter-go/keys/src/lib/golang/lib/rsad
+//
+// id:com-3e2e62794d06903c-rsad-Driver
+// class:class-c38c9ad22b7867d5ce346589e145db9f-Driver
+// alias:
+// scope:singleton
+//
+type p3e2e62794d_rsad_Driver struct {
+}
+
+func (inst* p3e2e62794d_rsad_Driver) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-3e2e62794d06903c-rsad-Driver"
+	r.Classes = "class-c38c9ad22b7867d5ce346589e145db9f-Driver"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* p3e2e62794d_rsad_Driver) new() any {
+    return &p3e2e62794.Driver{}
+}
+
+func (inst* p3e2e62794d_rsad_Driver) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*p3e2e62794.Driver)
 	nop(ie, com)
 
 	

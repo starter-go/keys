@@ -4,11 +4,11 @@ package keys
 type PublicKey interface {
 	Key
 
-	PublicKeyDriver() PublicKeyDriver
+	Driver() PublicKeyDriver
 
-	NewEncrypter(opt *Options) Encrypter
+	NewEncrypter(opt *Options) (Encrypter, error)
 
-	NewVerifier(opt *Options) Verifier
+	NewVerifier(opt *Options) (Verifier, error)
 }
 
 // PublicKeyLoader ... 代表公钥的 加载器 接口

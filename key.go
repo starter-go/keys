@@ -1,21 +1,23 @@
 package keys
 
-import "crypto"
+import (
+	"crypto"
+	"io"
+)
 
 // Class 表示密钥类型
 type Class string
 
 // 定义各种密钥类型
 const (
-	ClassKeyPair    Class = "pair"
-	ClassPrivateKey Class = "private"
-	ClassPublicKey  Class = "public"
-	ClassSecretKey  Class = "secret"
+	ClassPrivateKey Class = "private" // 私钥
+	ClassPublicKey  Class = "public"  // 公钥
+	ClassSecretKey  Class = "secret"  // 对称密钥
 )
 
 // Key ...
 type Key interface {
-	Driver() Driver
+	BaseDriver() Driver
 
 	Class() Class
 
@@ -37,4 +39,5 @@ type KeyData struct {
 type Options struct {
 	Algorithm ComplexAlgorithm
 	Size      int // in bits
+	Random    io.Reader
 }

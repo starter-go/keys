@@ -39,11 +39,11 @@ func (inst *UnitForRSA) Units(list []*units.Registration) []*units.Registration 
 
 func (inst *UnitForRSA) run() error {
 
-	driver1, err := inst.DriverManager.Find("rsa", keys.ClassKeyPair)
+	driver1, err := inst.DriverManager.Find("rsa", keys.ClassPrivateKey)
 	if err != nil {
 		return err
 	}
-	driver2 := driver1.(keys.KeyPairDriver)
+	driver2 := driver1.(keys.PrivateKeyDriver)
 
 	kp1, err := driver2.Generator().Generate(&keys.Options{})
 	if err != nil {
@@ -73,7 +73,7 @@ func (inst *UnitForRSA) run() error {
 	return nil
 }
 
-func (inst *UnitForRSA) tryExportKP(kp1 keys.KeyPair) error {
+func (inst *UnitForRSA) tryExportKP(kp1 keys.PrivateKey) error {
 
 	want := new(keys.KeyData)
 	have, err := kp1.Export(want)
@@ -81,7 +81,7 @@ func (inst *UnitForRSA) tryExportKP(kp1 keys.KeyPair) error {
 		return err
 	}
 
-	kp2, err := kp1.KeyPairDriver().Loader().Load(have)
+	kp2, err := kp1.Driver().Loader().Load(have)
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func (inst *UnitForRSA) tryExportKP(kp1 keys.KeyPair) error {
 	return nil
 }
 
-func (inst *UnitForRSA) tryExportPublic(kp keys.KeyPair) error {
+func (inst *UnitForRSA) tryExportPublic(kp keys.PrivateKey) error {
 
 	pub1 := kp.PublicKey()
 	want := new(keys.KeyData)
@@ -108,7 +108,7 @@ func (inst *UnitForRSA) tryExportPublic(kp keys.KeyPair) error {
 		return err
 	}
 
-	pub2, err := pub1.PublicKeyDriver().Loader().Load(have)
+	pub2, err := pub1.Driver().Loader().Load(have)
 	if err != nil {
 		return err
 	}
@@ -126,12 +126,12 @@ func (inst *UnitForRSA) tryExportPublic(kp keys.KeyPair) error {
 	return nil
 }
 
-func (inst *UnitForRSA) tryCrypt(kp keys.KeyPair) error {
+func (inst *UnitForRSA) tryCrypt(kp keys.PrivateKey) error {
 
 	return fmt.Errorf("no impl: tryCrypt")
 }
 
-func (inst *UnitForRSA) trySign(kp keys.KeyPair) error {
+func (inst *UnitForRSA) trySign(kp keys.PrivateKey) error {
 
 	return fmt.Errorf("no impl: trySign")
 }

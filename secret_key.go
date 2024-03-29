@@ -4,7 +4,7 @@ package keys
 type SecretKey interface {
 	Key
 
-	SecretKeyDriver() SecretKeyDriver
+	Driver() SecretKeyDriver
 
 	NewDecrypter(opt *Options) Decrypter
 

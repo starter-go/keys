@@ -1,42 +1,42 @@
 package keys
 
-import "crypto"
+// 【已废弃】 直接用 PrivateKey 代替
 
-// KeyPair ... (aka. private_key)
-type KeyPair interface {
-	Key
+// // KeyPair ... (aka. private_key)
+// type KeyPair interface {
+// 	Key
 
-	KeyPairDriver() KeyPairDriver
+// 	KeyPairDriver() KeyPairDriver
 
-	PublicKey() PublicKey
+// 	PublicKey() PublicKey
 
-	PrivateKey() PrivateKey
+// 	PrivateKey() PrivateKey
 
-	Native() KeyPairNative
-}
+// 	Native() KeyPairNative
+// }
 
-// KeyPairNative ...
-type KeyPairNative interface {
-	Signer() crypto.Signer
+// // KeyPairNative ...
+// type KeyPairNative interface {
+// 	Signer() crypto.Signer
 
-	Decrypter() crypto.Decrypter
-}
+// 	Decrypter() crypto.Decrypter
+// }
 
-// KeyPairLoader ... 代表密钥对的 加载器 接口
-type KeyPairLoader interface {
-	Load(kd *KeyData) (KeyPair, error)
-}
+// // KeyPairLoader ... 代表密钥对的 加载器 接口
+// type KeyPairLoader interface {
+// 	Load(kd *KeyData) (KeyPair, error)
+// }
 
-// KeyPairGenerator ... 代表密钥对的 生成器 接口
-type KeyPairGenerator interface {
-	Generate(opt *Options) (KeyPair, error)
-}
+// // KeyPairGenerator ... 代表密钥对的 生成器 接口
+// type KeyPairGenerator interface {
+// 	Generate(opt *Options) (KeyPair, error)
+// }
 
-// KeyPairDriver 代表密钥对的驱动接口
-type KeyPairDriver interface {
-	Driver
+// // KeyPairDriver 代表密钥对的驱动接口
+// type KeyPairDriver interface {
+// 	Driver
 
-	Loader() KeyPairLoader
+// 	Loader() KeyPairLoader
 
-	Generator() KeyPairGenerator
-}
+// 	Generator() KeyPairGenerator
+// }
