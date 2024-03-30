@@ -1,12 +1,11 @@
 package keys
 
-import "io"
-
 // Signature ...
 type Signature struct {
-	Rand      io.Reader
-	Digest    []byte
-	Signature []byte
+	// Rand      io.Reader
+	SaltLength int
+	Digest     []byte
+	Signature  []byte
 }
 
 // Signer ...

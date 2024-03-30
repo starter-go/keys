@@ -25,12 +25,12 @@ func (inst *encrypter) Options() keys.Options {
 
 func (inst *encrypter) Encrypt(e *keys.Encryption) error {
 
-	hash := inst.context.prepareHash(e)
-	key := inst.context.public.raw
+	ctx := inst.context
+	key := ctx.public.raw
 	label := e.IV
 	mode := inst.context.mode
 	plaintext := e.PlainText
-	random := inst.context.prepareRandom(e)
+	random := inst.context.prepareRandom()
 
 	switch mode {
 	case CipherModePKCS1v15:
@@ -48,6 +48,7 @@ func (inst *encrypter) Encrypt(e *keys.Encryption) error {
 		e.CipherText = ciphertext
 		break
 	case CipherModeOAEP:
+		hash := ctx.prepareHashIF()
 		ciphertext, err := rsa.EncryptOAEP(hash, random, key, plaintext, label)
 		if err != nil {
 			return err

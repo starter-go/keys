@@ -25,12 +25,12 @@ func (inst *decrypter) Options() keys.Options {
 
 func (inst *decrypter) Decrypt(e *keys.Encryption) error {
 
+	ctx := inst.context
 	ciphertext := e.CipherText
-	hash := inst.context.prepareHash(e)
-	key := inst.context.private.raw
+	key := ctx.private.raw
 	label := e.IV
-	mode := inst.context.mode
-	random := inst.context.prepareRandom(e)
+	mode := ctx.mode
+	random := ctx.prepareRandom()
 
 	switch mode {
 	case CipherModeSessionKey:
@@ -48,6 +48,7 @@ func (inst *decrypter) Decrypt(e *keys.Encryption) error {
 		e.PlainText = plaintext
 		break
 	case CipherModeOAEP:
+		hash := ctx.prepareHashIF()
 		plaintext, err := rsa.DecryptOAEP(hash, random, key, ciphertext, label)
 		if err != nil {
 			return err

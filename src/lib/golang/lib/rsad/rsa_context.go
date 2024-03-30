@@ -4,7 +4,6 @@ import (
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha256"
 	"hash"
 	"io"
 	"strings"
@@ -39,24 +38,33 @@ type privateKeyContext struct {
 	facade keys.PrivateKey
 }
 
+type optionContext struct {
+	options keys.Options
+	public  *publicKeyContext
+	private *privateKeyContext
+	// hash    hash.Hash
+	hash crypto.Hash
+
+	mode CipherMode
+}
+
 type cipherContext struct {
-	public    *publicKeyContext
-	private   *privateKeyContext
+	optionContext
+
 	decrypter keys.Decrypter
 	encrypter keys.Encrypter
-	options   keys.Options
-	mode      CipherMode
-	hash      hash.Hash
 }
 
 type signContext struct {
-	public  *publicKeyContext
-	private *privateKeyContext
+	optionContext
+
+	signer   keys.Signer
+	verifier keys.Verifier
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-func (inst *cipherContext) prepareRandom(e *keys.Encryption) io.Reader {
+func (inst *optionContext) prepareRandom() io.Reader {
 	r := inst.options.Random
 	if r == nil {
 		r = rand.Reader
@@ -64,15 +72,20 @@ func (inst *cipherContext) prepareRandom(e *keys.Encryption) io.Reader {
 	return r
 }
 
-func (inst *cipherContext) prepareHash(e *keys.Encryption) hash.Hash {
+func (inst *optionContext) prepareHashIF() hash.Hash {
+	h := inst.prepareHashID()
+	return h.New()
+}
+
+func (inst *optionContext) prepareHashID() crypto.Hash {
 	h := inst.hash
-	if h == nil {
-		h = sha256.New()
+	if h == 0 {
+		h = crypto.SHA256
 	}
 	return h
 }
 
-func (inst *cipherContext) setOptions(opt *keys.Options) {
+func (inst *optionContext) setOptions(opt *keys.Options) {
 
 	alg := opt.Algorithm.String()
 	alg = strings.ToLower(alg)
@@ -84,6 +97,8 @@ func (inst *cipherContext) setOptions(opt *keys.Options) {
 		mode = CipherModePKCS1v15
 	} else if strings.Contains(alg, "oaep") {
 		mode = CipherModeOAEP
+	} else if strings.Contains(alg, "pss") {
+		mode = CipherModePSS
 	}
 
 	reader := new(lib.ComplexAlgorithmReader)
@@ -93,7 +108,7 @@ func (inst *cipherContext) setOptions(opt *keys.Options) {
 		h = crypto.SHA256
 	}
 
-	inst.hash = h.New()
+	inst.hash = h
 	inst.mode = mode
 }
 

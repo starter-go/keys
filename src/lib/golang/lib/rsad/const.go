@@ -9,4 +9,5 @@ const (
 	CipherModeOAEP CipherMode = iota + 1
 	CipherModePKCS1v15
 	CipherModeSessionKey
+	CipherModePSS
 )

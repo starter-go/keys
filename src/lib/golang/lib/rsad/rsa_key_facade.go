@@ -2,7 +2,6 @@ package rsad
 
 import (
 	"crypto"
-	"fmt"
 
 	"github.com/starter-go/keys"
 )
@@ -40,7 +39,7 @@ func (inst *publicKeyFacade) NewEncrypter(opt *keys.Options) (keys.Encrypter, er
 	ctx.private = nil
 	ctx.public = inst.context
 	ctx.mode = 0
-	ctx.hash = nil
+	ctx.hash = 0
 
 	ctx.setOptions(opt)
 	ctx.encrypter = &encrypter{context: ctx}
@@ -50,7 +49,22 @@ func (inst *publicKeyFacade) NewEncrypter(opt *keys.Options) (keys.Encrypter, er
 }
 
 func (inst *publicKeyFacade) NewVerifier(opt *keys.Options) (keys.Verifier, error) {
-	return nil, fmt.Errorf("no impl")
+
+	if opt == nil {
+		opt = new(keys.Options)
+	}
+
+	ctx := new(signContext)
+	ctx.options = *opt
+	ctx.private = nil
+	ctx.public = inst.context
+	ctx.mode = 0
+	ctx.hash = 0
+
+	ctx.setOptions(opt)
+	ctx.verifier = &verifier{context: ctx}
+
+	return ctx.verifier, nil
 }
 
 func (inst *publicKeyFacade) Fingerprint(h crypto.Hash) []byte {
@@ -132,7 +146,7 @@ func (inst *privateKeyFacade) NewDecrypter(opt *keys.Options) (keys.Decrypter, e
 	ctx.private = inst.context
 	ctx.public = inst.context.public
 	ctx.mode = 0
-	ctx.hash = nil
+	ctx.hash = 0
 
 	ctx.setOptions(opt)
 	ctx.decrypter = &decrypter{context: ctx}
@@ -142,7 +156,22 @@ func (inst *privateKeyFacade) NewDecrypter(opt *keys.Options) (keys.Decrypter, e
 }
 
 func (inst *privateKeyFacade) NewSigner(opt *keys.Options) (keys.Signer, error) {
-	return nil, fmt.Errorf("no impl")
+
+	if opt == nil {
+		opt = new(keys.Options)
+	}
+
+	ctx := new(signContext)
+	ctx.options = *opt
+	ctx.private = inst.context
+	ctx.public = inst.context.public
+	ctx.mode = 0
+	ctx.hash = 0
+
+	ctx.setOptions(opt)
+	ctx.signer = &signer{context: ctx}
+
+	return ctx.signer, nil
 }
 
 func (inst *privateKeyFacade) PublicKey() keys.PublicKey {
