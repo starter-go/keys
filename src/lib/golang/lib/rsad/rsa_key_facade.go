@@ -30,7 +30,23 @@ func (inst *publicKeyFacade) BaseDriver() keys.Driver {
 }
 
 func (inst *publicKeyFacade) NewEncrypter(opt *keys.Options) (keys.Encrypter, error) {
-	return nil, fmt.Errorf("no impl")
+
+	if opt == nil {
+		opt = new(keys.Options)
+	}
+
+	ctx := new(cipherContext)
+	ctx.options = *opt
+	ctx.private = nil
+	ctx.public = inst.context
+	ctx.mode = 0
+	ctx.hash = nil
+
+	ctx.setOptions(opt)
+	ctx.encrypter = &encrypter{context: ctx}
+	// ctx.decrypter = &decrypter{context: ctx}
+
+	return ctx.encrypter, nil
 }
 
 func (inst *publicKeyFacade) NewVerifier(opt *keys.Options) (keys.Verifier, error) {
@@ -106,7 +122,23 @@ func (inst *privateKeyFacade) Decrypter() crypto.Decrypter {
 }
 
 func (inst *privateKeyFacade) NewDecrypter(opt *keys.Options) (keys.Decrypter, error) {
-	return nil, fmt.Errorf("no impl")
+
+	if opt == nil {
+		opt = new(keys.Options)
+	}
+
+	ctx := new(cipherContext)
+	ctx.options = *opt
+	ctx.private = inst.context
+	ctx.public = inst.context.public
+	ctx.mode = 0
+	ctx.hash = nil
+
+	ctx.setOptions(opt)
+	ctx.decrypter = &decrypter{context: ctx}
+	// ctx.encrypter = &encrypter{context: ctx}
+
+	return ctx.decrypter, nil
 }
 
 func (inst *privateKeyFacade) NewSigner(opt *keys.Options) (keys.Signer, error) {

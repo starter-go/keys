@@ -3,11 +3,15 @@ package testunits
 import (
 	"bytes"
 	"crypto"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha256"
 	"fmt"
 
 	"github.com/starter-go/base/lang"
 	"github.com/starter-go/keys"
 	"github.com/starter-go/units"
+	"github.com/starter-go/vlog"
 )
 
 // UnitForRSA ...
@@ -45,10 +49,15 @@ func (inst *UnitForRSA) run() error {
 	}
 	driver2 := driver1.(keys.PrivateKeyDriver)
 
-	kp1, err := driver2.Generator().Generate(&keys.Options{})
+	opt := &keys.Options{Size: 1024 * 2}
+	kp1, err := driver2.Generator().Generate(opt)
 	if err != nil {
 		return err
 	}
+
+	rsaPK := kp1.Native().Signer().(*rsa.PrivateKey)
+	size := rsaPK.Size()
+	vlog.Info("RSA key-size: %d", size*8)
 
 	err = inst.tryExportKP(kp1)
 	if err != nil {
@@ -60,7 +69,7 @@ func (inst *UnitForRSA) run() error {
 		return err
 	}
 
-	err = inst.tryCrypt(kp1)
+	err = inst.tryCipher(kp1)
 	if err != nil {
 		return err
 	}
@@ -126,12 +135,80 @@ func (inst *UnitForRSA) tryExportPublic(kp keys.PrivateKey) error {
 	return nil
 }
 
-func (inst *UnitForRSA) tryCrypt(kp keys.PrivateKey) error {
+func (inst *UnitForRSA) tryCipher(kp keys.PrivateKey) error {
 
-	return fmt.Errorf("no impl: tryCrypt")
+	data1 := make([]byte, 245)
+	rand.Reader.Read(data1)
+
+	opt := &keys.Options{
+		Algorithm: "PKCS1v15",
+	}
+
+	encrypter, err := kp.PublicKey().NewEncrypter(opt)
+	if err != nil {
+		return err
+	}
+
+	decrypter, err := kp.NewDecrypter(opt)
+	if err != nil {
+		return err
+	}
+
+	en1 := &keys.Encryption{
+		CipherText: nil,
+		PlainText:  data1,
+		IV:         nil,
+	}
+	err = encrypter.Encrypt(en1)
+	if err != nil {
+		return err
+	}
+
+	en2 := &keys.Encryption{
+		CipherText: en1.CipherText,
+		PlainText:  nil,
+		IV:         nil,
+	}
+	err = decrypter.Decrypt(en2)
+	if err != nil {
+		return err
+	}
+
+	data2 := en2.PlainText
+
+	if !bytes.Equal(data1, data2) {
+		return fmt.Errorf("tryCipher: data1 != data2")
+	}
+	return nil
 }
 
 func (inst *UnitForRSA) trySign(kp keys.PrivateKey) error {
 
-	return fmt.Errorf("no impl: trySign")
+	data := make([]byte, 0)
+	rand.Reader.Read(data)
+	sum := sha256.Sum256(data)
+
+	opt := &keys.Options{}
+	sig := &keys.Signature{}
+
+	opt.Algorithm = "SHA256"
+	sig.Digest = sum[:]
+	sig.Signature = nil
+
+	signer, err := kp.NewSigner(opt)
+	if err != nil {
+		return err
+	}
+
+	err = signer.Sign(sig)
+	if err != nil {
+		return err
+	}
+
+	verifier, err := kp.PublicKey().NewVerifier(opt)
+	if err != nil {
+		return err
+	}
+
+	return verifier.Verify(sig)
 }

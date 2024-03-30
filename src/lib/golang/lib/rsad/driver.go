@@ -2,9 +2,6 @@ package rsad
 
 import "github.com/starter-go/keys"
 
-// AlgorithmName 定义算法名称："RSA"
-const AlgorithmName = "RSA"
-
 // Driver ...
 type Driver struct {
 
