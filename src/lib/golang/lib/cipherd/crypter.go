@@ -55,7 +55,7 @@ type contextHolder struct {
 	context *Context
 }
 
-func (inst *contextHolder) prepareBlockIV(e *keys.Encryption) (cipher.Block, []byte, error) {
+func (inst *contextHolder) prepareBlockIV(e *keys.Crypt) (cipher.Block, []byte, error) {
 
 	block := inst.context.block
 	iv := e.IV
@@ -104,7 +104,7 @@ func (inst *contextHolder) removePadding(blockSize int, data []byte) []byte {
 	return dst
 }
 
-func (inst *contextHolder) encryptWithBlockMode(bm cipher.BlockMode, e *keys.Encryption) error {
+func (inst *contextHolder) encryptWithBlockMode(bm cipher.BlockMode, e *keys.Crypt) error {
 	src := e.PlainText
 	src = inst.addPadding(bm.BlockSize(), src)
 	dst := make([]byte, len(src))
@@ -113,7 +113,7 @@ func (inst *contextHolder) encryptWithBlockMode(bm cipher.BlockMode, e *keys.Enc
 	return nil
 }
 
-func (inst *contextHolder) decryptWithBlockMode(bm cipher.BlockMode, e *keys.Encryption) error {
+func (inst *contextHolder) decryptWithBlockMode(bm cipher.BlockMode, e *keys.Crypt) error {
 	src := e.CipherText
 	dst := make([]byte, len(src))
 	bm.CryptBlocks(dst, src)
@@ -122,7 +122,7 @@ func (inst *contextHolder) decryptWithBlockMode(bm cipher.BlockMode, e *keys.Enc
 	return nil
 }
 
-func (inst *contextHolder) encryptWithStream(st cipher.Stream, e *keys.Encryption) error {
+func (inst *contextHolder) encryptWithStream(st cipher.Stream, e *keys.Crypt) error {
 	src := e.PlainText
 	dst := make([]byte, len(src))
 	st.XORKeyStream(dst, src)
@@ -130,7 +130,7 @@ func (inst *contextHolder) encryptWithStream(st cipher.Stream, e *keys.Encryptio
 	return nil
 }
 
-func (inst *contextHolder) decryptWithStream(st cipher.Stream, e *keys.Encryption) error {
+func (inst *contextHolder) decryptWithStream(st cipher.Stream, e *keys.Crypt) error {
 	src := e.CipherText
 	dst := make([]byte, len(src))
 	st.XORKeyStream(dst, src)
@@ -138,11 +138,11 @@ func (inst *contextHolder) decryptWithStream(st cipher.Stream, e *keys.Encryptio
 	return nil
 }
 
-func (inst *contextHolder) encryptWithAEAD(bm cipher.AEAD, e *keys.Encryption) error {
+func (inst *contextHolder) encryptWithAEAD(bm cipher.AEAD, e *keys.Crypt) error {
 	return fmt.Errorf("no impl: encryptWithAEAD")
 }
 
-func (inst *contextHolder) decryptWithAEAD(bm cipher.AEAD, e *keys.Encryption) error {
+func (inst *contextHolder) decryptWithAEAD(bm cipher.AEAD, e *keys.Crypt) error {
 	return fmt.Errorf("no impl: decryptWithAEAD")
 }
 
@@ -156,7 +156,7 @@ func (inst *crypterCBC) _impl() Crypter {
 	return inst
 }
 
-func (inst *crypterCBC) Decrypt(e *keys.Encryption) error {
+func (inst *crypterCBC) Decrypt(e *keys.Crypt) error {
 	b, iv, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err
@@ -165,7 +165,7 @@ func (inst *crypterCBC) Decrypt(e *keys.Encryption) error {
 	return inst.ch.decryptWithBlockMode(bm, e)
 }
 
-func (inst *crypterCBC) Encrypt(e *keys.Encryption) error {
+func (inst *crypterCBC) Encrypt(e *keys.Crypt) error {
 	b, iv, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err
@@ -184,7 +184,7 @@ func (inst *crypterCFB) _impl() Crypter {
 	return inst
 }
 
-func (inst *crypterCFB) Decrypt(e *keys.Encryption) error {
+func (inst *crypterCFB) Decrypt(e *keys.Crypt) error {
 	b, iv, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err
@@ -193,7 +193,7 @@ func (inst *crypterCFB) Decrypt(e *keys.Encryption) error {
 	return inst.ch.decryptWithStream(st, e)
 }
 
-func (inst *crypterCFB) Encrypt(e *keys.Encryption) error {
+func (inst *crypterCFB) Encrypt(e *keys.Crypt) error {
 	b, iv, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err
@@ -212,7 +212,7 @@ func (inst *crypterCTR) _impl() Crypter {
 	return inst
 }
 
-func (inst *crypterCTR) Decrypt(e *keys.Encryption) error {
+func (inst *crypterCTR) Decrypt(e *keys.Crypt) error {
 	b, iv, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err
@@ -221,7 +221,7 @@ func (inst *crypterCTR) Decrypt(e *keys.Encryption) error {
 	return inst.ch.decryptWithStream(st, e)
 }
 
-func (inst *crypterCTR) Encrypt(e *keys.Encryption) error {
+func (inst *crypterCTR) Encrypt(e *keys.Crypt) error {
 	b, iv, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err
@@ -240,7 +240,7 @@ func (inst *crypterGCM) _impl() Crypter {
 	return inst
 }
 
-func (inst *crypterGCM) Decrypt(e *keys.Encryption) error {
+func (inst *crypterGCM) Decrypt(e *keys.Crypt) error {
 	b, _, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err
@@ -252,7 +252,7 @@ func (inst *crypterGCM) Decrypt(e *keys.Encryption) error {
 	return inst.ch.decryptWithAEAD(aead, e)
 }
 
-func (inst *crypterGCM) Encrypt(e *keys.Encryption) error {
+func (inst *crypterGCM) Encrypt(e *keys.Crypt) error {
 	b, _, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err
@@ -274,7 +274,7 @@ func (inst *crypterOFB) _impl() Crypter {
 	return inst
 }
 
-func (inst *crypterOFB) Decrypt(e *keys.Encryption) error {
+func (inst *crypterOFB) Decrypt(e *keys.Crypt) error {
 	b, iv, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err
@@ -283,7 +283,7 @@ func (inst *crypterOFB) Decrypt(e *keys.Encryption) error {
 	return inst.ch.decryptWithStream(st, e)
 }
 
-func (inst *crypterOFB) Encrypt(e *keys.Encryption) error {
+func (inst *crypterOFB) Encrypt(e *keys.Crypt) error {
 	b, iv, err := inst.ch.prepareBlockIV(e)
 	if err != nil {
 		return err

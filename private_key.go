@@ -8,9 +8,9 @@ type PrivateKey interface {
 
 	PublicKey() PublicKey
 
-	NewDecrypter(opt *Options) (Decrypter, error)
+	Decrypter() Decrypter
 
-	NewSigner(opt *Options) (Signer, error)
+	Signer() Signer
 
 	Native() PrivateKeyNative
 

@@ -127,21 +127,25 @@ func (inst *UnitForAES) tryCipher(sk1 keys.SecretKey) error {
 		return err
 	}
 
+	iv := make([]byte, block.BlockSize())
+	random := rand.Reader
+	random.Read(iv)
+
 	opt := &keys.Options{
 		Flow:    keys.FlowModeCBC,
 		Padding: keys.PaddingPKCS7,
-		Random:  rand.Reader,
+		Random:  random,
+		IV:      iv,
 	}
-	iv := make([]byte, block.BlockSize())
-	opt.Random.Read(iv)
-	opt.IV = iv
 
 	// encrypt
-	enc, err := sk1.NewEncrypter(opt)
-	if err != nil {
-		return err
-	}
-	e1 := &keys.Encryption{
+	enc := sk1.Encrypter()
+	e1 := &keys.Crypt{
+		IV:      opt.IV,
+		Padding: opt.Padding,
+		Flow:    opt.Flow,
+		Random:  opt.Random,
+
 		PlainText: data1,
 	}
 	err = enc.Encrypt(e1)
@@ -150,13 +154,14 @@ func (inst *UnitForAES) tryCipher(sk1 keys.SecretKey) error {
 	}
 
 	// decrypt
-	dec, err := sk2.NewDecrypter(opt)
-	if err != nil {
-		return err
-	}
-	e2 := &keys.Encryption{
+	dec := sk2.Decrypter()
+	e2 := &keys.Crypt{
+		IV:      opt.IV,
+		Padding: opt.Padding,
+		Flow:    opt.Flow,
+		Random:  opt.Random,
+
 		CipherText: e1.CipherText,
-		IV:         e1.IV,
 	}
 	err = dec.Decrypt(e2)
 	if err != nil {

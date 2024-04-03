@@ -6,9 +6,9 @@ type PublicKey interface {
 
 	Driver() PublicKeyDriver
 
-	NewEncrypter(opt *Options) (Encrypter, error)
+	Encrypter() Encrypter
 
-	NewVerifier(opt *Options) (Verifier, error)
+	Verifier() Verifier
 }
 
 // PublicKeyLoader ... 代表公钥的 加载器 接口

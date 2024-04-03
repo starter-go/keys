@@ -37,18 +37,16 @@ func (inst *secretKeyFacade) createCipher(opt *keys.Options) (aesCipher, error) 
 	cipher1 := &aesCipherImpl{
 		context: inst.context,
 	}
-	cipher1.init(opt)
+	// cipher1.init(opt)
 	return cipher1, nil
 }
 
-func (inst *secretKeyFacade) NewDecrypter(opt *keys.Options) (keys.Decrypter, error) {
-	c1, err := inst.createCipher(opt)
-	return c1, err
+func (inst *secretKeyFacade) Decrypter() keys.Decrypter {
+	return inst.context.dec
 }
 
-func (inst *secretKeyFacade) NewEncrypter(opt *keys.Options) (keys.Encrypter, error) {
-	c1, err := inst.createCipher(opt)
-	return c1, err
+func (inst *secretKeyFacade) Encrypter() keys.Encrypter {
+	return inst.context.enc
 }
 
 func (inst *secretKeyFacade) Native() keys.SecretKeyNative {

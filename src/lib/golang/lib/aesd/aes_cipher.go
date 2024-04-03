@@ -2,7 +2,6 @@ package aesd
 
 import (
 	"crypto/aes"
-	"io"
 
 	"github.com/starter-go/keys"
 	"github.com/starter-go/keys/src/lib/golang/lib/cipherd"
@@ -19,28 +18,28 @@ type aesCipherImpl struct {
 	context *aesKeyContext
 
 	// algorithm keys.ComplexAlgorithm
+	// random  io.Reader
+	// flow    keys.FlowMode
+	// padding keys.PaddingMode
+	// iv      []byte
 
-	random  io.Reader
-	flow    keys.FlowMode
-	padding keys.PaddingMode
-	iv      []byte
 }
 
 func (inst *aesCipherImpl) _impl() aesCipher {
 	return inst
 }
 
-func (inst *aesCipherImpl) init(opt *keys.Options) error {
+// func (inst *aesCipherImpl) init(opt *keys.Options) error {
 
-	inst.flow = opt.Flow
-	inst.padding = opt.Padding
-	inst.iv = opt.IV
-	inst.random = opt.Random
+// 	inst.flow = opt.Flow
+// 	inst.padding = opt.Padding
+// 	inst.iv = opt.IV
+// 	inst.random = opt.Random
 
-	return nil
-}
+// 	return nil
+// }
 
-func (inst *aesCipherImpl) config(e *keys.Encryption) (*cipherd.Config, error) {
+func (inst *aesCipherImpl) config(e *keys.Crypt) (*cipherd.Config, error) {
 
 	ctx := inst.context
 	key := ctx.rawkey
@@ -51,21 +50,17 @@ func (inst *aesCipherImpl) config(e *keys.Encryption) (*cipherd.Config, error) {
 
 	cfg := &cipherd.Config{
 		// Algorithm: inst.algorithm,
-		Flow:    inst.flow,
-		Padding: inst.padding,
-		IV:      inst.iv,
-		Random:  inst.random,
+		Flow:    e.Flow,
+		Padding: e.Padding,
+		IV:      e.IV,
+		Random:  e.Random,
 		Block:   block,
-	}
-
-	if e.IV != nil {
-		cfg.IV = e.IV
 	}
 
 	return cfg, nil
 }
 
-func (inst *aesCipherImpl) Decrypt(e *keys.Encryption) error {
+func (inst *aesCipherImpl) Decrypt(e *keys.Crypt) error {
 	cfg, err := inst.config(e)
 	if err != nil {
 		return err
@@ -77,7 +72,7 @@ func (inst *aesCipherImpl) Decrypt(e *keys.Encryption) error {
 	return ctx.Decrypt(e)
 }
 
-func (inst *aesCipherImpl) Encrypt(e *keys.Encryption) error {
+func (inst *aesCipherImpl) Encrypt(e *keys.Crypt) error {
 	cfg, err := inst.config(e)
 	if err != nil {
 		return err

@@ -144,30 +144,25 @@ func (inst *UnitForRSA) tryCipher(kp keys.PrivateKey) error {
 		Padding: keys.PaddingPKCS1v15,
 	}
 
-	encrypter, err := kp.PublicKey().NewEncrypter(opt)
-	if err != nil {
-		return err
-	}
+	encrypter := kp.PublicKey().Encrypter()
+	decrypter := kp.Decrypter()
 
-	decrypter, err := kp.NewDecrypter(opt)
-	if err != nil {
-		return err
-	}
-
-	en1 := &keys.Encryption{
+	en1 := &keys.Crypt{
 		CipherText: nil,
 		PlainText:  data1,
 		IV:         nil,
+		Padding:    opt.Padding,
 	}
-	err = encrypter.Encrypt(en1)
+	err := encrypter.Encrypt(en1)
 	if err != nil {
 		return err
 	}
 
-	en2 := &keys.Encryption{
+	en2 := &keys.Crypt{
 		CipherText: en1.CipherText,
 		PlainText:  nil,
 		IV:         nil,
+		Padding:    opt.Padding,
 	}
 	err = decrypter.Decrypt(en2)
 	if err != nil {
@@ -196,18 +191,13 @@ func (inst *UnitForRSA) trySign(kp keys.PrivateKey) error {
 
 	sig.Digest = sum[:]
 	sig.Signature = nil
+	sig.Hash = opt.Hash
+	sig.Padding = opt.Padding
 
-	signer, err := kp.NewSigner(opt)
-	if err != nil {
-		return err
-	}
+	signer := kp.Signer()
+	verifier := kp.PublicKey().Verifier()
 
-	err = signer.Sign(sig)
-	if err != nil {
-		return err
-	}
-
-	verifier, err := kp.PublicKey().NewVerifier(opt)
+	err := signer.Sign(sig)
 	if err != nil {
 		return err
 	}

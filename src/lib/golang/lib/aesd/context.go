@@ -1,7 +1,6 @@
 package aesd
 
 import (
-	"crypto/cipher"
 	"crypto/rand"
 	"io"
 
@@ -18,8 +17,13 @@ type aesKeyContext struct {
 	parent     *aesContext
 	rawkey     []byte
 	sizeInBits int
-	facade     keys.SecretKey
-	block0     cipher.Block // the block as prototype
+
+	facade keys.SecretKey
+	enc    keys.Encrypter
+	dec    keys.Decrypter
+
+	// block0     cipher.Block // the block as prototype
+
 }
 
 // type aesOptionContext struct {

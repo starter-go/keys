@@ -19,22 +19,15 @@ func (inst *aesKeyGen) Generate(opt *keys.Options) (keys.SecretKey, error) {
 	}
 
 	size := opt.Size
-
 	random := inst.context.getRandom(opt)
 	length := size / 8
-	parent := inst.context
 
-	buffer := make([]byte, length)
-	random.Read(buffer)
+	key := make([]byte, length)
+	random.Read(key)
 
-	ctx1 := &aesKeyContext{
-		parent:     parent,
-		rawkey:     buffer,
-		sizeInBits: size,
-		facade:     nil,
+	builder := &aesKeyBuilder{
+		context: inst.context,
+		key:     key,
 	}
-
-	ctx1.facade = &secretKeyFacade{context: ctx1}
-
-	return ctx1.facade, nil
+	return builder.create()
 }

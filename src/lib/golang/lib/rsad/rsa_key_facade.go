@@ -28,43 +28,12 @@ func (inst *publicKeyFacade) BaseDriver() keys.Driver {
 	return inst.context.driver
 }
 
-func (inst *publicKeyFacade) NewEncrypter(opt *keys.Options) (keys.Encrypter, error) {
-
-	if opt == nil {
-		opt = new(keys.Options)
-	}
-
-	ctx := new(cipherContext)
-	ctx.options = *opt
-	ctx.private = nil
-	ctx.public = inst.context
-	ctx.padding = opt.Padding
-	ctx.hash = opt.Hash
-
-	ctx.setOptions(opt)
-	ctx.encrypter = &encrypter{context: ctx}
-	// ctx.decrypter = &decrypter{context: ctx}
-
-	return ctx.encrypter, nil
+func (inst *publicKeyFacade) Encrypter() keys.Encrypter {
+	return inst
 }
 
-func (inst *publicKeyFacade) NewVerifier(opt *keys.Options) (keys.Verifier, error) {
-
-	if opt == nil {
-		opt = new(keys.Options)
-	}
-
-	ctx := new(signContext)
-	ctx.options = *opt
-	ctx.private = nil
-	ctx.public = inst.context
-	ctx.padding = opt.Padding
-	ctx.hash = opt.Hash
-
-	ctx.setOptions(opt)
-	ctx.verifier = &verifier{context: ctx}
-
-	return ctx.verifier, nil
+func (inst *publicKeyFacade) Verifier() keys.Verifier {
+	return inst
 }
 
 func (inst *publicKeyFacade) Fingerprint(h crypto.Hash) []byte {
@@ -81,6 +50,20 @@ func (inst *publicKeyFacade) Export(want *keys.KeyData) (*keys.KeyData, error) {
 	ls := new(pemLS)
 	key := inst.context.raw
 	return ls.storePublicKey(key)
+}
+
+func (inst *publicKeyFacade) Verify(s *keys.Signature) error {
+	si := &rsaSign{
+		public: inst.context,
+	}
+	return si.Verify(s)
+}
+
+func (inst *publicKeyFacade) Encrypt(e *keys.Crypt) error {
+	ci := &rsaCipher{
+		public: inst.context,
+	}
+	return ci.Encrypt(e)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,60 +105,56 @@ func (inst *privateKeyFacade) Export(want *keys.KeyData) (*keys.KeyData, error) 
 }
 
 func (inst *privateKeyFacade) Native() keys.PrivateKeyNative {
+	n := &privateKeyNative{
+		context: inst.context,
+	}
+	return n
+}
+
+func (inst *privateKeyFacade) Decrypter() keys.Decrypter {
 	return inst
 }
 
-func (inst *privateKeyFacade) Signer() crypto.Signer {
-	key := inst.context.raw
-	return key
-}
-
-func (inst *privateKeyFacade) Decrypter() crypto.Decrypter {
-	key := inst.context.raw
-	return key
-}
-
-func (inst *privateKeyFacade) NewDecrypter(opt *keys.Options) (keys.Decrypter, error) {
-
-	if opt == nil {
-		opt = new(keys.Options)
-	}
-
-	ctx := new(cipherContext)
-	ctx.options = *opt
-	ctx.private = inst.context
-	ctx.public = inst.context.public
-	ctx.padding = opt.Padding
-	ctx.hash = opt.Hash
-
-	ctx.setOptions(opt)
-	ctx.decrypter = &decrypter{context: ctx}
-	// ctx.encrypter = &encrypter{context: ctx}
-
-	return ctx.decrypter, nil
-}
-
-func (inst *privateKeyFacade) NewSigner(opt *keys.Options) (keys.Signer, error) {
-
-	if opt == nil {
-		opt = new(keys.Options)
-	}
-
-	ctx := new(signContext)
-	ctx.options = *opt
-	ctx.private = inst.context
-	ctx.public = inst.context.public
-	ctx.padding = opt.Padding
-	ctx.hash = opt.Hash
-
-	ctx.setOptions(opt)
-	ctx.signer = &signer{context: ctx}
-
-	return ctx.signer, nil
+func (inst *privateKeyFacade) Signer() keys.Signer {
+	return inst
 }
 
 func (inst *privateKeyFacade) PublicKey() keys.PublicKey {
 	return inst.context.public.facade
 }
 
+func (inst *privateKeyFacade) Sign(s *keys.Signature) error {
+	si := &rsaSign{
+		public:  inst.context.public,
+		private: inst.context,
+	}
+	return si.Sign(s)
+}
+
+func (inst *privateKeyFacade) Decrypt(e *keys.Crypt) error {
+	ci := &rsaCipher{
+		public:  inst.context.public,
+		private: inst.context,
+	}
+	return ci.Decrypt(e)
+}
+
 ////////////////////////////////////////////////////////////////////////////////
+
+type privateKeyNative struct {
+	context *privateKeyContext
+}
+
+func (inst *privateKeyNative) _impl() keys.PrivateKeyNative {
+	return inst
+}
+
+func (inst *privateKeyNative) Decrypter() crypto.Decrypter {
+	key := inst.context.raw
+	return key
+}
+
+func (inst *privateKeyNative) Signer() crypto.Signer {
+	key := inst.context.raw
+	return key
+}

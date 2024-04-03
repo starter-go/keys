@@ -10,9 +10,9 @@ type SecretKey interface {
 
 	Driver() SecretKeyDriver
 
-	NewDecrypter(opt *Options) (Decrypter, error)
+	Decrypter() Decrypter
 
-	NewEncrypter(opt *Options) (Encrypter, error)
+	Encrypter() Encrypter
 
 	Native() SecretKeyNative
 }

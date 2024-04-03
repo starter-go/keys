@@ -62,11 +62,11 @@ func (inst *Context) NewStream() (cipher.Stream, error) {
 }
 
 // Encrypt ...
-func (inst *Context) Encrypt(e *keys.Encryption) error {
+func (inst *Context) Encrypt(e *keys.Crypt) error {
 	return inst.crypter.Encrypt(e)
 }
 
 // Decrypt ...
-func (inst *Context) Decrypt(e *keys.Encryption) error {
+func (inst *Context) Decrypt(e *keys.Crypt) error {
 	return inst.crypter.Decrypt(e)
 }
