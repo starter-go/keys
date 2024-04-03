@@ -6,10 +6,8 @@ import (
 	"crypto/rsa"
 	"hash"
 	"io"
-	"strings"
 
 	"github.com/starter-go/keys"
-	"github.com/starter-go/keys/src/lib/golang/lib"
 )
 
 type rsaContext struct {
@@ -42,10 +40,10 @@ type optionContext struct {
 	options keys.Options
 	public  *publicKeyContext
 	private *privateKeyContext
-	// hash    hash.Hash
-	hash crypto.Hash
+	hash    crypto.Hash
+	padding keys.PaddingMode
 
-	mode CipherMode
+	// flow    keys.FlowMode
 }
 
 type cipherContext struct {
@@ -87,29 +85,29 @@ func (inst *optionContext) prepareHashID() crypto.Hash {
 
 func (inst *optionContext) setOptions(opt *keys.Options) {
 
-	alg := opt.Algorithm.String()
-	alg = strings.ToLower(alg)
-	mode := CipherModeOAEP
+	// alg := opt.Algorithm.String()
+	// alg = strings.ToLower(alg)
+	// padding  := opt.Padding
 
-	if strings.Contains(alg, "session") {
-		mode = CipherModeSessionKey
-	} else if strings.Contains(alg, "pkcs1v15") {
-		mode = CipherModePKCS1v15
-	} else if strings.Contains(alg, "oaep") {
-		mode = CipherModeOAEP
-	} else if strings.Contains(alg, "pss") {
-		mode = CipherModePSS
-	}
+	// if strings.Contains(alg, "session") {
+	// 	mode = CipherModeSessionKey
+	// } else if strings.Contains(alg, "pkcs1v15") {
+	// 	mode = CipherModePKCS1v15
+	// } else if strings.Contains(alg, "oaep") {
+	// 	mode = CipherModeOAEP
+	// } else if strings.Contains(alg, "pss") {
+	// 	mode = CipherModePSS
+	// }
 
-	reader := new(lib.ComplexAlgorithmReader)
-	reader.Init(opt.Algorithm)
-	h, err := reader.ReadHash()
-	if err != nil {
-		h = crypto.SHA256
-	}
+	// reader := new(lib.ComplexAlgorithmReader)
+	// reader.Init(opt.Algorithm)
+	// h, err := reader.ReadHash()
+	// if err != nil {
+	// 	h = crypto.SHA256
+	// }
 
-	inst.hash = h
-	inst.mode = mode
+	inst.hash = opt.Hash
+	inst.padding = opt.Padding
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -31,6 +31,7 @@ func (inst*autoRegistrar) addAll() error {
 
     
     inst.register(&p67199fd988_testunits_Unit1{})
+    inst.register(&p67199fd988_testunits_UnitForAES{})
     inst.register(&p67199fd988_testunits_UnitForRSA{})
 
 

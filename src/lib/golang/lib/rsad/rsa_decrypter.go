@@ -29,25 +29,25 @@ func (inst *decrypter) Decrypt(e *keys.Encryption) error {
 	ciphertext := e.CipherText
 	key := ctx.private.raw
 	label := e.IV
-	mode := ctx.mode
+	mode := ctx.padding
 	random := ctx.prepareRandom()
 
 	switch mode {
-	case CipherModeSessionKey:
+	case keys.PaddingSessionKey:
 		sessionKey := e.PlainText
 		err := rsa.DecryptPKCS1v15SessionKey(random, key, ciphertext, sessionKey)
 		if err != nil {
 			return err
 		}
 		break
-	case CipherModePKCS1v15:
+	case keys.PaddingPKCS1v15:
 		plaintext, err := rsa.DecryptPKCS1v15(random, key, ciphertext)
 		if err != nil {
 			return err
 		}
 		e.PlainText = plaintext
 		break
-	case CipherModeOAEP:
+	case keys.PaddingOAEP:
 		hash := ctx.prepareHashIF()
 		plaintext, err := rsa.DecryptOAEP(hash, random, key, ciphertext, label)
 		if err != nil {

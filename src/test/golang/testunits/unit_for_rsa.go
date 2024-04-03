@@ -141,7 +141,7 @@ func (inst *UnitForRSA) tryCipher(kp keys.PrivateKey) error {
 	rand.Reader.Read(data1)
 
 	opt := &keys.Options{
-		Algorithm: "PKCS1v15",
+		Padding: keys.PaddingPKCS1v15,
 	}
 
 	encrypter, err := kp.PublicKey().NewEncrypter(opt)
@@ -188,10 +188,12 @@ func (inst *UnitForRSA) trySign(kp keys.PrivateKey) error {
 	rand.Reader.Read(data)
 	sum := sha256.Sum256(data)
 
-	opt := &keys.Options{}
+	opt := &keys.Options{
+		Hash:    crypto.SHA256,
+		Padding: keys.PaddingPKCS1v15,
+	}
 	sig := &keys.Signature{}
 
-	opt.Algorithm = "SHA256_Pkcs1v15"
 	sig.Digest = sum[:]
 	sig.Signature = nil
 

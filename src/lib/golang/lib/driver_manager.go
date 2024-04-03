@@ -84,3 +84,33 @@ func (inst *DriverManagerImpl) isAvailable(dr *keys.DriverRegistration) bool {
 	}
 	return true
 }
+
+// FindSecretKeyDriver ...
+func (inst *DriverManagerImpl) FindSecretKeyDriver(algorithm string) (keys.SecretKeyDriver, error) {
+	class := keys.ClassSecretKey
+	drv, err := inst.Find(algorithm, class)
+	if err != nil {
+		return nil, err
+	}
+	return drv.(keys.SecretKeyDriver), nil
+}
+
+// FindPublicKeyDriver ...
+func (inst *DriverManagerImpl) FindPublicKeyDriver(algorithm string) (keys.PublicKeyDriver, error) {
+	class := keys.ClassPublicKey
+	drv, err := inst.Find(algorithm, class)
+	if err != nil {
+		return nil, err
+	}
+	return drv.(keys.PublicKeyDriver), nil
+}
+
+// FindPrivateKeyDriver ...
+func (inst *DriverManagerImpl) FindPrivateKeyDriver(algorithm string) (keys.PrivateKeyDriver, error) {
+	class := keys.ClassPrivateKey
+	drv, err := inst.Find(algorithm, class)
+	if err != nil {
+		return nil, err
+	}
+	return drv.(keys.PrivateKeyDriver), nil
+}

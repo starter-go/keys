@@ -43,6 +43,50 @@ func (inst* p67199fd988_testunits_Unit1) inject(injext application.InjectionExt,
 
 
 
+// type p67199fd98.UnitForAES in package:github.com/starter-go/keys/src/test/golang/testunits
+//
+// id:com-67199fd9885079ff-testunits-UnitForAES
+// class:class-0dc072ed44b3563882bff4e657a52e62-Units
+// alias:
+// scope:singleton
+//
+type p67199fd988_testunits_UnitForAES struct {
+}
+
+func (inst* p67199fd988_testunits_UnitForAES) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-67199fd9885079ff-testunits-UnitForAES"
+	r.Classes = "class-0dc072ed44b3563882bff4e657a52e62-Units"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* p67199fd988_testunits_UnitForAES) new() any {
+    return &p67199fd98.UnitForAES{}
+}
+
+func (inst* p67199fd988_testunits_UnitForAES) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*p67199fd98.UnitForAES)
+	nop(ie, com)
+
+	
+    com.DriverManager = inst.getDriverManager(ie)
+
+
+    return nil
+}
+
+
+func (inst*p67199fd988_testunits_UnitForAES) getDriverManager(ie application.InjectionExt)pc38c9ad22.DriverManager{
+    return ie.GetComponent("#alias-c38c9ad22b7867d5ce346589e145db9f-DriverManager").(pc38c9ad22.DriverManager)
+}
+
+
+
 // type p67199fd98.UnitForRSA in package:github.com/starter-go/keys/src/test/golang/testunits
 //
 // id:com-67199fd9885079ff-testunits-UnitForRSA

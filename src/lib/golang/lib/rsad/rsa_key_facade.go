@@ -38,8 +38,8 @@ func (inst *publicKeyFacade) NewEncrypter(opt *keys.Options) (keys.Encrypter, er
 	ctx.options = *opt
 	ctx.private = nil
 	ctx.public = inst.context
-	ctx.mode = 0
-	ctx.hash = 0
+	ctx.padding = opt.Padding
+	ctx.hash = opt.Hash
 
 	ctx.setOptions(opt)
 	ctx.encrypter = &encrypter{context: ctx}
@@ -58,8 +58,8 @@ func (inst *publicKeyFacade) NewVerifier(opt *keys.Options) (keys.Verifier, erro
 	ctx.options = *opt
 	ctx.private = nil
 	ctx.public = inst.context
-	ctx.mode = 0
-	ctx.hash = 0
+	ctx.padding = opt.Padding
+	ctx.hash = opt.Hash
 
 	ctx.setOptions(opt)
 	ctx.verifier = &verifier{context: ctx}
@@ -145,8 +145,8 @@ func (inst *privateKeyFacade) NewDecrypter(opt *keys.Options) (keys.Decrypter, e
 	ctx.options = *opt
 	ctx.private = inst.context
 	ctx.public = inst.context.public
-	ctx.mode = 0
-	ctx.hash = 0
+	ctx.padding = opt.Padding
+	ctx.hash = opt.Hash
 
 	ctx.setOptions(opt)
 	ctx.decrypter = &decrypter{context: ctx}
@@ -165,8 +165,8 @@ func (inst *privateKeyFacade) NewSigner(opt *keys.Options) (keys.Signer, error) 
 	ctx.options = *opt
 	ctx.private = inst.context
 	ctx.public = inst.context.public
-	ctx.mode = 0
-	ctx.hash = 0
+	ctx.padding = opt.Padding
+	ctx.hash = opt.Hash
 
 	ctx.setOptions(opt)
 	ctx.signer = &signer{context: ctx}

@@ -37,7 +37,13 @@ type KeyData struct {
 
 // Options 是通用的选项
 type Options struct {
-	Algorithm ComplexAlgorithm
-	Size      int // in bits
-	Random    io.Reader
+	// Algorithm ComplexAlgorithm
+
+	Size int // in bits
+
+	Flow    FlowMode
+	Padding PaddingMode
+	Hash    crypto.Hash
+	Random  io.Reader
+	IV      []byte
 }

@@ -32,14 +32,14 @@ func (inst *verifier) Verify(s *keys.Signature) error {
 	ctx := inst.context
 	key := inst.context.public.raw
 	digest := s.Digest
-	mode := ctx.mode
+	mode := ctx.padding
 	sig := s.Signature
 	hash := ctx.prepareHashID()
 
 	switch mode {
-	case CipherModePKCS1v15:
+	case keys.PaddingPKCS1v15:
 		return rsa.VerifyPKCS1v15(key, hash, digest, sig)
-	case CipherModePSS:
+	case keys.PaddingPSS:
 		opts := &rsa.PSSOptions{
 			Hash:       hash,
 			SaltLength: s.SaltLength,

@@ -32,19 +32,19 @@ func (inst *signer) Sign(s *keys.Signature) error {
 	ctx := inst.context
 	key := inst.context.private.raw
 	digest := s.Digest
-	mode := ctx.mode
+	mode := ctx.padding
 	random := ctx.prepareRandom()
 	hash := ctx.prepareHashID()
 
 	switch mode {
-	case CipherModePKCS1v15:
+	case keys.PaddingPKCS1v15:
 		sig, err := rsa.SignPKCS1v15(random, key, hash, digest)
 		if err != nil {
 			return err
 		}
 		s.Signature = sig
 		break
-	case CipherModePSS:
+	case keys.PaddingPSS:
 		opts := &rsa.PSSOptions{
 			Hash:       hash,
 			SaltLength: s.SaltLength,

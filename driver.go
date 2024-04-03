@@ -21,4 +21,10 @@ type DriverRegistration struct {
 // DriverManager 代表密钥驱动管理器
 type DriverManager interface {
 	Find(algorithm string, class Class) (Driver, error)
+
+	FindSecretKeyDriver(algorithm string) (SecretKeyDriver, error)
+
+	FindPublicKeyDriver(algorithm string) (PublicKeyDriver, error)
+
+	FindPrivateKeyDriver(algorithm string) (PrivateKeyDriver, error)
 }

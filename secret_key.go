@@ -1,14 +1,27 @@
 package keys
 
+import (
+	"crypto/cipher"
+)
+
 // SecretKey ...
 type SecretKey interface {
 	Key
 
 	Driver() SecretKeyDriver
 
-	NewDecrypter(opt *Options) Decrypter
+	NewDecrypter(opt *Options) (Decrypter, error)
 
-	NewEncrypter(opt *Options) Encrypter
+	NewEncrypter(opt *Options) (Encrypter, error)
+
+	Native() SecretKeyNative
+}
+
+// SecretKeyNative ...
+type SecretKeyNative interface {
+	Key() SecretKey
+
+	NewCipher() (cipher.Block, error)
 }
 
 // SecretKeyLoader ... 代表密钥的 加载器 接口

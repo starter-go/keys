@@ -28,26 +28,26 @@ func (inst *encrypter) Encrypt(e *keys.Encryption) error {
 	ctx := inst.context
 	key := ctx.public.raw
 	label := e.IV
-	mode := inst.context.mode
+	mode := inst.context.padding
 	plaintext := e.PlainText
 	random := inst.context.prepareRandom()
 
 	switch mode {
-	case CipherModePKCS1v15:
+	case keys.PaddingPKCS1v15:
 		ciphertext, err := rsa.EncryptPKCS1v15(random, key, plaintext)
 		if err != nil {
 			return err
 		}
 		e.CipherText = ciphertext
 		break
-	case CipherModeSessionKey:
+	case keys.PaddingSessionKey:
 		ciphertext, err := rsa.EncryptPKCS1v15(random, key, plaintext)
 		if err != nil {
 			return err
 		}
 		e.CipherText = ciphertext
 		break
-	case CipherModeOAEP:
+	case keys.PaddingOAEP:
 		hash := ctx.prepareHashIF()
 		ciphertext, err := rsa.EncryptOAEP(hash, random, key, plaintext, label)
 		if err != nil {

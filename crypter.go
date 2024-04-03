@@ -9,18 +9,10 @@ type Encryption struct {
 
 // Decrypter ...
 type Decrypter interface {
-	Key() Key
-
-	Options() Options
-
 	Decrypt(e *Encryption) error
 }
 
 // Encrypter ...
 type Encrypter interface {
-	Key() Key
-
-	Options() Options
-
 	Encrypt(e *Encryption) error
 }
