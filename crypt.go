@@ -2,6 +2,7 @@ package keys
 
 import (
 	"crypto"
+	"crypto/cipher"
 	"io"
 )
 
@@ -20,9 +21,11 @@ type Crypt struct {
 // Decrypter ...
 type Decrypter interface {
 	Decrypt(e *Crypt) error
+	Block() cipher.Block
 }
 
 // Encrypter ...
 type Encrypter interface {
+	Block() cipher.Block
 	Encrypt(e *Crypt) error
 }

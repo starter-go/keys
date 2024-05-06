@@ -174,6 +174,11 @@ func (inst *crypterCBC) Encrypt(e *keys.Crypt) error {
 	return inst.ch.encryptWithBlockMode(bm, e)
 }
 
+func (inst *crypterCBC) Block() cipher.Block {
+	ctx := inst.ch.context
+	return ctx.block
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 type crypterCFB struct {
@@ -202,6 +207,11 @@ func (inst *crypterCFB) Encrypt(e *keys.Crypt) error {
 	return inst.ch.encryptWithStream(st, e)
 }
 
+func (inst *crypterCFB) Block() cipher.Block {
+	ctx := inst.ch.context
+	return ctx.block
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 type crypterCTR struct {
@@ -228,6 +238,11 @@ func (inst *crypterCTR) Encrypt(e *keys.Crypt) error {
 	}
 	st := cipher.NewCTR(b, iv)
 	return inst.ch.encryptWithStream(st, e)
+}
+
+func (inst *crypterCTR) Block() cipher.Block {
+	ctx := inst.ch.context
+	return ctx.block
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -264,6 +279,11 @@ func (inst *crypterGCM) Encrypt(e *keys.Crypt) error {
 	return inst.ch.encryptWithAEAD(aead, e)
 }
 
+func (inst *crypterGCM) Block() cipher.Block {
+	ctx := inst.ch.context
+	return ctx.block
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 type crypterOFB struct {
@@ -290,6 +310,11 @@ func (inst *crypterOFB) Encrypt(e *keys.Crypt) error {
 	}
 	st := cipher.NewOFB(b, iv)
 	return inst.ch.encryptWithStream(st, e)
+}
+
+func (inst *crypterOFB) Block() cipher.Block {
+	ctx := inst.ch.context
+	return ctx.block
 }
 
 ////////////////////////////////////////////////////////////////////////////////

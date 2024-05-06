@@ -2,6 +2,7 @@ package rsad
 
 import (
 	"crypto"
+	"crypto/cipher"
 
 	"github.com/starter-go/keys"
 )
@@ -64,6 +65,10 @@ func (inst *publicKeyFacade) Encrypt(e *keys.Crypt) error {
 		public: inst.context,
 	}
 	return ci.Encrypt(e)
+}
+
+func (inst *publicKeyFacade) Block() cipher.Block {
+	panic("unsupported method:Block()")
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -137,6 +142,10 @@ func (inst *privateKeyFacade) Decrypt(e *keys.Crypt) error {
 		private: inst.context,
 	}
 	return ci.Decrypt(e)
+}
+
+func (inst *privateKeyFacade) Block() cipher.Block {
+	panic("unsupported method:Block()")
 }
 
 ////////////////////////////////////////////////////////////////////////////////

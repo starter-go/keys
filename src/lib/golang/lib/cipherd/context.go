@@ -70,3 +70,8 @@ func (inst *Context) Encrypt(e *keys.Crypt) error {
 func (inst *Context) Decrypt(e *keys.Crypt) error {
 	return inst.crypter.Decrypt(e)
 }
+
+// Block ...
+func (inst *Context) Block() cipher.Block {
+	return inst.block
+}

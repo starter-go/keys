@@ -70,6 +70,11 @@ func (inst *UnitForAES) run() error {
 		return err
 	}
 
+	err = inst.tryBlock(sk1)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -174,5 +179,12 @@ func (inst *UnitForAES) tryCipher(sk1 keys.SecretKey) error {
 	if !eq {
 		return fmt.Errorf("UnitForAES.tryCipher: data1 != data2")
 	}
+	return nil
+}
+
+func (inst *UnitForAES) tryBlock(sk1 keys.SecretKey) error {
+	block := sk1.Decrypter().Block()
+	bsize := block.BlockSize()
+	fmt.Printf("secret_key.block.size = %d", bsize)
 	return nil
 }

@@ -2,6 +2,7 @@ package aesd
 
 import (
 	"crypto/aes"
+	"crypto/cipher"
 
 	"github.com/starter-go/keys"
 	"github.com/starter-go/keys/src/lib/golang/lib/cipherd"
@@ -27,6 +28,15 @@ type aesCipherImpl struct {
 
 func (inst *aesCipherImpl) _impl() aesCipher {
 	return inst
+}
+
+func (inst *aesCipherImpl) Block() cipher.Block {
+	key := inst.context.rawkey
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err)
+	}
+	return block
 }
 
 // func (inst *aesCipherImpl) init(opt *keys.Options) error {

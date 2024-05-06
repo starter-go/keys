@@ -2,6 +2,7 @@ package rsad
 
 import (
 	"crypto"
+	"crypto/cipher"
 	"crypto/rand"
 	"crypto/rsa"
 	"fmt"
@@ -119,4 +120,8 @@ func (inst *rsaCipher) Decrypt(e *keys.Crypt) error {
 		return fmt.Errorf("bad RSA decrypt mode: %d", mode)
 	}
 	return nil
+}
+
+func (inst *rsaCipher) Block() cipher.Block {
+	panic("unsupported method:Block()")
 }
